@@ -39,13 +39,13 @@
 #include "SDL\include\SDL.h"
 #include "SDL_image\include\SDL_image.h"
 #include "SDL_mixer\include\SDL_mixer.h"
-<<<<<<< HEAD
+
 #include "stdlib.h"
 #include "stdio.h"
-=======
+
 #include <stdlib.h>
 #include <time.h>
->>>>>>> origin/master
+
 
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
@@ -75,7 +75,7 @@ struct globals
 	SDL_Texture* background = nullptr;
 	SDL_Texture* ship = nullptr;
 	SDL_Texture* shot = nullptr;
-<<<<<<< HEAD
+
 	SDL_Texture* arrow_up = nullptr;
 	SDL_Texture* arrow_down = nullptr;
 	SDL_Texture* arrow_left = nullptr;
@@ -84,9 +84,9 @@ struct globals
 	int checker = 0;
 	int imp_d = 0;
 	int mov[3] = { 0 };
-=======
+
 	SDL_Texture* texture;
->>>>>>> origin/master
+
 	int background_width = 0;
 	int once = 0;
 	int ship_x = 0;
@@ -269,7 +269,7 @@ void Draw()
 			SDL_RenderCopy(g.renderer, g.shot, nullptr, &target);
 		}
 	}
-<<<<<<< HEAD
+
 	// Draw imputs that the player has to do
 	
 	{ 
@@ -304,9 +304,9 @@ void Draw()
 	}
 	g.imp_d++;
 	}
-=======
+
 	
->>>>>>> origin/master
+
 	// Finally swap buffers
 	SDL_RenderCopy(g.renderer, g.texture, NULL, NULL);
 	SDL_RenderPresent(g.renderer);

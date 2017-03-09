@@ -62,6 +62,7 @@
 
 int l = 0;
 SDL_Rect rectangle1;
+int kill_all = 0;
 
 struct projectile
 {
@@ -304,7 +305,7 @@ void Draw()
 	}
 		if (collide(g.ship_x, g.ship_y, 50, 50, rectangle1))
 		{
-			Finish();
+			++kill_all;
 
 		}
 	}
@@ -431,7 +432,7 @@ int main(int argc, char* args[])
 {
 	Start();
 	
-	while(CheckInput())
+	while (CheckInput() && kill_all == 0)
 	{
 		MoveStuff();
 		Draw();

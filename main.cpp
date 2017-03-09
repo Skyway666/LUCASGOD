@@ -39,6 +39,8 @@
 #include "SDL\include\SDL.h"
 #include "SDL_image\include\SDL_image.h"
 #include "SDL_mixer\include\SDL_mixer.h"
+#include "stdlib.h"
+#include "stdio.h"
 
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
@@ -53,6 +55,7 @@
 #define NUM_SHOTS 32
 #define SHOT_SPEED 5
 
+
 struct projectile
 {
 	int x, y;
@@ -66,7 +69,16 @@ struct globals
 	SDL_Texture* background = nullptr;
 	SDL_Texture* ship = nullptr;
 	SDL_Texture* shot = nullptr;
+	SDL_Texture* arrow_up = nullptr;
+	SDL_Texture* arrow_down = nullptr;
+	SDL_Texture* arrow_left = nullptr;
+	SDL_Texture* arrow_right = nullptr;
+	SDL_Texture* shot_indic = nullptr;
+	int checker = 0;
+	int imp_d = 0;
+	int mov[3] = { 0 };
 	int background_width = 0;
+	int once = 0;
 	int ship_x = 0;
 	int ship_y = 0;
 	int last_shot = 0;
@@ -91,6 +103,12 @@ void Start()
 	g.background = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/background.png"));
 	g.ship = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/ship.png"));
 	g.shot = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/shot.png"));
+	g.arrow_up = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/Arrow_up.png"));
+	g.arrow_down = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/Arrow_down.png"));
+	g.arrow_left = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/Arrow_left.png"));
+	g.arrow_right = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/Arrow_right.png"));
+	g.shot_indic = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/Shot_indic.png"));
+	printf("%i", SDL_GetError());
 	SDL_QueryTexture(g.background, nullptr, nullptr, &g.background_width, nullptr);
 
 	// Create mixer --
@@ -223,10 +241,117 @@ void Draw()
 			SDL_RenderCopy(g.renderer, g.shot, nullptr, &target);
 		}
 	}
-
+	// Draw imputs that the player has to do
+	
+	{ 
+	SDL_Rect imput_screen;
+	int counter = 0;
+	
+	if (g.imp_d == 0)
+    { 
+	     while (counter != 3)
+	   {
+		g.mov[counter] = rand() % 4;
+		++counter;
+	   }
+	}
+	counter = 0;
+	imput_screen.x = 325;
+	imput_screen.y = 0;
+	imput_screen.w = 100;
+	imput_screen.h = 100;
+	while (counter != 3)
+	{
+		switch (g.mov[counter])
+		{
+		case 0: SDL_RenderCopy(g.renderer, g.arrow_up, nullptr, &imput_screen); break;
+		case 1: SDL_RenderCopy(g.renderer, g.arrow_down, nullptr, &imput_screen); break;
+		case 2: SDL_RenderCopy(g.renderer, g.arrow_left, nullptr, &imput_screen); break;
+		case 3:SDL_RenderCopy(g.renderer, g.arrow_right, nullptr, &imput_screen); break;
+		case 4: SDL_RenderCopy(g.renderer, g.shot_indic, nullptr, &imput_screen); break;
+		}
+		imput_screen.x += 100;
+		counter++;
+	}
+	g.imp_d++;
+	}
 	// Finally swap buffers
 	SDL_RenderPresent(g.renderer);
 }
+void combo()
+{
+	 
+	  
+		switch (g.mov[g.checker])
+		{
+		case 0: 
+			if (g.up == true)
+			{
+				++g.checker;
+			}
+			else if (g.down == true && g.mov[g.checker - 1] != 1 || g.left == true && g.mov[g.checker - 1] != 2 || g.right == true && g.mov[g.checker - 1] != 3)
+			{
+				g.checker = 0;
+			}
+			break;
+		case 1:
+			if (g.down == true)
+			{
+				++g.checker;
+				
+			}
+			else if (g.up == true && g.mov[g.checker - 1] != 0 || g.left == true && g.mov[g.checker - 1] != 2 || g.right == true && g.mov[g.checker - 1] != 3)
+			{
+				g.checker = 0;
+			}
+			
+			break;
+		case 2:
+			if (g.left == true )
+			{
+				++g.checker;
+			}
+			else if (g.down == true && g.mov[g.checker - 1] !=  1 || g.up == true && g.mov[g.checker - 1] != 0 || g.right == true && g.mov[g.checker - 1] != 3)
+			{
+				g.checker = 0;
+			}
+		
+			break;
+		case 3:
+			if (g.right == true )
+			{
+				++g.checker;
+			}
+			else if (g.down == true && g.mov[g.checker-1] != 1 || g.up == true && g.mov[g.checker - 1] != 0 || g.left == true && g.mov[g.checker - 1] != 2)
+			{
+				g.checker = 0;
+				
+			}
+			break;
+		case 4:
+			if (g.fire == true)
+			{
+				++g.checker;
+			}
+			
+			break;
+	    }
+
+		if (g.checker == 3)
+		{
+			g.imp_d = 0;
+			g.checker = 0;
+			
+	    }
+}
+
+	
+
+
+	
+	
+
+
 
 // ----------------------------------------------------------------
 int main(int argc, char* args[])
@@ -237,6 +362,11 @@ int main(int argc, char* args[])
 	{
 		MoveStuff();
 		Draw();
+		if (g.once % 10 == 0)
+		{ 
+		combo();
+		}
+		g.once++;
 	}
 
 	Finish();

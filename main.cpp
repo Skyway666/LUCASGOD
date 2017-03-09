@@ -39,8 +39,13 @@
 #include "SDL\include\SDL.h"
 #include "SDL_image\include\SDL_image.h"
 #include "SDL_mixer\include\SDL_mixer.h"
+<<<<<<< HEAD
 #include "stdlib.h"
 #include "stdio.h"
+=======
+#include <stdlib.h>
+#include <time.h>
+>>>>>>> origin/master
 
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
@@ -66,9 +71,11 @@ struct globals
 {
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
+	SDL_Surface* surface1;
 	SDL_Texture* background = nullptr;
 	SDL_Texture* ship = nullptr;
 	SDL_Texture* shot = nullptr;
+<<<<<<< HEAD
 	SDL_Texture* arrow_up = nullptr;
 	SDL_Texture* arrow_down = nullptr;
 	SDL_Texture* arrow_left = nullptr;
@@ -77,6 +84,9 @@ struct globals
 	int checker = 0;
 	int imp_d = 0;
 	int mov[3] = { 0 };
+=======
+	SDL_Texture* texture;
+>>>>>>> origin/master
 	int background_width = 0;
 	int once = 0;
 	int ship_x = 0;
@@ -97,7 +107,7 @@ void Start()
 	// Create window & renderer
 	g.window = SDL_CreateWindow("QSS - Quick Side Scroller - 0.5", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	g.renderer = SDL_CreateRenderer(g.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
+	
 	// Load image lib --
 	IMG_Init(IMG_INIT_PNG);
 	g.background = SDL_CreateTextureFromSurface(g.renderer, IMG_Load("assets/background.png"));
@@ -212,12 +222,26 @@ void MoveStuff()
 	}
 }
 
+
+bool collide(struct SDL_Rect spaceship, struct SDL_Rect rectangle)
+{
+	if (spaceship.y + spaceship.h > rectangle.y && spaceship.x + spaceship.w > rectangle.x && rectangle.y + rectangle.h > spaceship.y && rectangle.x + rectangle.w > spaceship.x)
+	{
+		return true;
+	}
+}
 // ----------------------------------------------------------------
 void Draw()
 {
+	SDL_Rect rectangle1;
+	rectangle1.x = rand() % 640;
+	rectangle1.y = rand() % 480;	
+	rectangle1.h = 10;
+	rectangle1.w = 10;
+
 	SDL_Rect target;
 
-	// Scroll and draw background
+	//Scroll and draw background
 	g.scroll += SCROLL_SPEED;
 	if(g.scroll >= g.background_width)
 		g.scroll = 0;
@@ -227,10 +251,14 @@ void Draw()
 	SDL_RenderCopy(g.renderer, g.background, nullptr, &target);
 	target.x += g.background_width;
 	SDL_RenderCopy(g.renderer, g.background, nullptr, &target);
-
+	
 	// Draw player's ship --
 	target = { g.ship_x, g.ship_y, 64, 64 };
 	SDL_RenderCopy(g.renderer, g.ship, nullptr, &target);
+
+	SDL_SetRenderDrawColor(g.renderer, 255, 0, 0, 255);
+	SDL_RenderFillRect(g.renderer, &rectangle1);
+
 
 	// Draw lasers --
 	for(int i = 0; i < NUM_SHOTS; ++i)
@@ -241,6 +269,7 @@ void Draw()
 			SDL_RenderCopy(g.renderer, g.shot, nullptr, &target);
 		}
 	}
+<<<<<<< HEAD
 	// Draw imputs that the player has to do
 	
 	{ 
@@ -275,7 +304,11 @@ void Draw()
 	}
 	g.imp_d++;
 	}
+=======
+	
+>>>>>>> origin/master
 	// Finally swap buffers
+	SDL_RenderCopy(g.renderer, g.texture, NULL, NULL);
 	SDL_RenderPresent(g.renderer);
 }
 void combo()
@@ -357,7 +390,7 @@ void combo()
 int main(int argc, char* args[])
 {
 	Start();
-
+	
 	while(CheckInput())
 	{
 		MoveStuff();

@@ -96,6 +96,7 @@ struct globals
 	int ship_y = 0;
 	int last_shot = 0;
 	bool fire, up, down, left, right;
+	bool im_fire, im_up, im_down, im_left, im_right;
 	Mix_Music* music = nullptr;
 	Mix_Chunk* fx_shoot = nullptr;
 	int scroll = 0;
@@ -135,6 +136,7 @@ void Start()
 	g.ship_x = 100;
 	g.ship_y = SCREEN_HEIGHT / 2;
 	g.fire = g.up = g.down = g.left = g.right = false;
+	g.im_fire = g.im_up = g.im_down = g.im_left = g.im_right = false;
 }
 
 // ----------------------------------------------------------------
@@ -175,12 +177,12 @@ bool CheckInput()
 		{
 			switch(event.key.keysym.sym)
 			{
-				case SDLK_UP: g.up = true; break;
-				case SDLK_DOWN: g.down = true; break;
-				case SDLK_LEFT: g.left = true; break;
-				case SDLK_RIGHT: g.right = true; break;
+			    case SDLK_UP: g.up = true; g.im_up = true; break;
+				case SDLK_DOWN: g.down = true; g.im_down = true; break;
+				case SDLK_LEFT: g.left = true; g.im_left = true; break;
+				case SDLK_RIGHT: g.right = true; g.im_right = true; break;
 				case SDLK_ESCAPE: ret = false; break;
-				case SDLK_SPACE: g.fire = (event.key.repeat == 0); break;
+				case SDLK_SPACE: g.fire = (event.key.repeat == 0); g.im_fire = true; break;
 			}
 		}
 		else if (event.type == SDL_QUIT)
@@ -355,44 +357,44 @@ void combo()
 		switch (g.mov[g.checker])
 		{
 		case 0: 
-			if (g.up == true)
+			if (g.im_up == true)
 			{
 				++g.checker;
 			}
-			else if (g.down == true && g.mov[g.checker - 1] != 1 || g.left == true && g.mov[g.checker - 1] != 2 || g.right == true && g.mov[g.checker - 1] != 3)
+			else if (g.im_down == true && g.mov[g.checker - 1] != 1 || g.im_left == true && g.mov[g.checker - 1] != 2 || g.im_right == true && g.mov[g.checker - 1] != 3)
 			{
 				g.checker = 0;
 			}
 			break;
 		case 1:
-			if (g.down == true)
+			if (g.im_down == true)
 			{
 				++g.checker;
 				
 			}
-			else if (g.up == true && g.mov[g.checker - 1] != 0 || g.left == true && g.mov[g.checker - 1] != 2 || g.right == true && g.mov[g.checker - 1] != 3)
+			else if (g.im_up == true && g.mov[g.checker - 1] != 0 || g.im_left == true && g.mov[g.checker - 1] != 2 || g.im_right == true && g.mov[g.checker - 1] != 3)
 			{
 				g.checker = 0;
 			}
 			
 			break;
 		case 2:
-			if (g.left == true )
+			if (g.im_left == true )
 			{
 				++g.checker;
 			}
-			else if (g.down == true && g.mov[g.checker - 1] !=  1 || g.up == true && g.mov[g.checker - 1] != 0 || g.right == true && g.mov[g.checker - 1] != 3)
+			else if (g.im_down == true && g.mov[g.checker - 1] !=  1 || g.im_up == true && g.mov[g.checker - 1] != 0 || g.im_right == true && g.mov[g.checker - 1] != 3)
 			{
 				g.checker = 0;
 			}
 		
 			break;
 		case 3:
-			if (g.right == true )
+			if (g.im_right == true )
 			{
 				++g.checker;
 			}
-			else if (g.down == true && g.mov[g.checker-1] != 1 || g.up == true && g.mov[g.checker - 1] != 0 || g.left == true && g.mov[g.checker - 1] != 2)
+			else if (g.im_down == true && g.mov[g.checker-1] != 1 || g.im_up == true && g.mov[g.checker - 1] != 0 || g.im_left == true && g.mov[g.checker - 1] != 2)
 			{
 				g.checker = 0;
 				
@@ -413,6 +415,7 @@ void combo()
 			g.checker = 0;
 			
 	    }
+		g.im_fire = g.im_up = g.im_down = g.im_left = g.im_right = false;
 }
 
 	
@@ -432,10 +435,10 @@ int main(int argc, char* args[])
 	{
 		MoveStuff();
 		Draw();
-		if (g.once % 10 == 0)
-		{ 
+		
+		
 		combo();
-		}
+		
 		g.once++;
 	}
 

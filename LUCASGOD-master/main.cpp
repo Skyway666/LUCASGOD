@@ -320,7 +320,7 @@ void Draw()
     { 
 	     while (counter != 3)
 	   {
-		g.mov[counter] = rand() % 4;
+		g.mov[counter] = rand() % 5;
 		++counter;
 	   }
 	}
@@ -333,10 +333,10 @@ void Draw()
 	{
 		switch (g.mov[counter])
 		{
-		case 0: SDL_RenderCopy(g.renderer, g.arrow_up, nullptr, &imput_screen); break;
+		case 0: SDL_RenderCopy(g.renderer, g.arrow_up, nullptr, &imput_screen);   break;
 		case 1: SDL_RenderCopy(g.renderer, g.arrow_down, nullptr, &imput_screen); break;
 		case 2: SDL_RenderCopy(g.renderer, g.arrow_left, nullptr, &imput_screen); break;
-		case 3:SDL_RenderCopy(g.renderer, g.arrow_right, nullptr, &imput_screen); break;
+		case 3: SDL_RenderCopy(g.renderer, g.arrow_right, nullptr, &imput_screen); break;
 		case 4: SDL_RenderCopy(g.renderer, g.shot_indic, nullptr, &imput_screen); break;
 		}
 		imput_screen.x += 100;
@@ -362,7 +362,7 @@ void combo()
 			{
 				++g.checker;
 			}
-			else if (g.im_down == true && g.mov[g.checker - 1] != 1 || g.im_left == true && g.mov[g.checker - 1] != 2 || g.im_right == true && g.mov[g.checker - 1] != 3)
+			else if (g.im_down == true || g.im_left == true|| g.im_right == true|| g.im_fire == true)
 			{
 				g.checker = 0;
 			}
@@ -373,7 +373,7 @@ void combo()
 				++g.checker;
 				
 			}
-			else if (g.im_up == true && g.mov[g.checker - 1] != 0 || g.im_left == true && g.mov[g.checker - 1] != 2 || g.im_right == true && g.mov[g.checker - 1] != 3)
+			else if (g.im_up == true|| g.im_left == true|| g.im_right == true || g.im_fire == true )
 			{
 				g.checker = 0;
 			}
@@ -384,7 +384,7 @@ void combo()
 			{
 				++g.checker;
 			}
-			else if (g.im_down == true && g.mov[g.checker - 1] !=  1 || g.im_up == true && g.mov[g.checker - 1] != 0 || g.im_right == true && g.mov[g.checker - 1] != 3)
+			else if (g.im_down == true  || g.im_up == true || g.im_right == true  || g.im_fire == true)
 			{
 				g.checker = 0;
 			}
@@ -395,19 +395,22 @@ void combo()
 			{
 				++g.checker;
 			}
-			else if (g.im_down == true && g.mov[g.checker-1] != 1 || g.im_up == true && g.mov[g.checker - 1] != 0 || g.im_left == true && g.mov[g.checker - 1] != 2)
+			else if (g.im_down == true || g.im_up == true || g.im_left == true  || g.im_fire == true)
 			{
 				g.checker = 0;
 				
 			}
 			break;
 		case 4:
-			if (g.fire == true)
+			if (g.im_fire == true)
 			{
-				++g.checker;
+ 				++g.checker;
 			}
-			
-			break;
+			else if(g.im_down == true || g.im_up == true  || g.im_left == true|| g.im_right == true )
+			{
+				g.checker = 0;
+			}
+			break; 
 	    }
 
 		if (g.checker == 3)
